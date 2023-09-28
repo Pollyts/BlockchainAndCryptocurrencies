@@ -14,7 +14,7 @@ class Program
         var blockChain = new BlockChain();
 
         //starting a blockchain with the first block
-        var currentHash = blockChain.AddNewBlock("HelloWorld", new byte[] { 96 });
+        var currentHash = blockChain.AddNewBlock("HelloWorld", "");
 
         var answer = "0";
         while (answer != "8")
@@ -41,11 +41,14 @@ class Program
                     blockChain.VerifyAndShow();
                     break;
                 case "6":
+                    Console.WriteLine("Write the hash");
+                    var hash = Console.ReadLine();
                     Console.WriteLine("Write your data");
                     var newData = Console.ReadLine();
-                    blockChain.ChangeBlockData(currentHash, newData);
+                    blockChain.ChangeBlockData(hash, newData);
                     break;
                 case "7":
+                    blockChain.GetBlocksCount();
                     break;
                 case "8":
                     break;
@@ -59,6 +62,26 @@ class Program
 
 public class BlockChain
 {
+    public static string GetHash(string text)
+    {
+        if (string.IsNullOrEmpty(text))
+        {
+            return text;
+        }
+
+        char[] charArray = text.ToCharArray();
+
+        for (int i = 0; i < charArray.Length; i++)
+        {
+            if (char.IsLetter(charArray[i]))
+            {
+                char baseChar = char.IsUpper(charArray[i]) ? 'A' : 'a';
+                charArray[i] = (char)(((charArray[i] - baseChar + 30) % 26) + baseChar);
+            }
+        }
+
+        return new string(charArray);
+    }
     public BlockChain()
     {
         Blocks = new List<Block>();
@@ -72,13 +95,9 @@ public class BlockChain
     /// <param name="previousHash">if I understood right, in real world we are searching the previous block using previousHash, 
     /// but in that example I don`t need it because I am using List and the previous block will be always the last</param>
     /// <returns></returns>
-    public byte[] AddNewBlock(object data, byte[] previousHash)
+    public string AddNewBlock(object data, string previousHash)
     {
-        var hash = new byte[0];
-        using (SHA256 sha256 = SHA256.Create())
-        {
-            hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(data.ToString()));
-        }
+        var hash = GetHash(data.ToString());
         try
         {
 
@@ -86,7 +105,8 @@ public class BlockChain
             {
                 Data = data.ToString(),
                 Timestamp = DateTime.Now,
-                Hash = hash
+                Hash = hash,
+                Prev_Block_Hash = previousHash
             });
 
         }
@@ -99,12 +119,12 @@ public class BlockChain
         return hash;
     }
 
-    public void ShowBlock(byte[] previousHash)
+    public void ShowBlock(string previousHash)
     {
         var block = Blocks.Where(b => b.Hash == previousHash).FirstOrDefault();
         if (block != null)
         {
-            Console.WriteLine(string.Format("Block with data {1} was created at {2}", block.Data, block.Timestamp.ToString()));
+            Console.WriteLine(string.Format("Block with data {0} and hash {1} was created at {2}", block.Data, block.Hash, block.Timestamp.ToString()));
         }
         else
         {
@@ -116,25 +136,23 @@ public class BlockChain
     {
         foreach (var block in Blocks)
         {
-            Console.WriteLine(string.Format("Block with data {1} was created at {2}", block.Data, block.Timestamp.ToString()));
+            ShowBlock(block.Hash);
         }
     }
 
-    public bool Verify(byte[] previousHash)
+    public bool Verify(string previousHash)
     {
-        var hash = new byte[0];
         var block = Blocks.Where(b => b.Hash == previousHash).FirstOrDefault();
-        using (SHA256 sha256 = SHA256.Create())
-        {
-            hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(block.Data.ToString()));
-        }
+        var hash = GetHash(block.Data.ToString());
 
         if (previousHash == hash)
         {
+            Console.WriteLine("Verified");
             return true;
         }
         else
         {
+            Console.WriteLine("Unverified");
             return false;
         }
     }
@@ -150,17 +168,14 @@ public class BlockChain
         }
     }
 
-    public void ChangeBlockData(byte[] blockHash, object newData)
+    public void ChangeBlockData(string blockHash, object newData)
     {
         var block = Blocks.Where(b => b.Hash == blockHash).FirstOrDefault();
 
         if (block != null)
         {
             block.Data = newData.ToString();
-            using (SHA256 sha256 = SHA256.Create())
-            {
-                block.Hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(block.Data.ToString()));
-            }
+            block.Hash = GetHash(block.Data.ToString());
         }
         else
         {
@@ -176,10 +191,10 @@ public class BlockChain
 
 public class Block //Can`t it be a transaction?
 {
-    public byte[] Hash { get; set; } //Unique hash of the block
+    public string Hash { get; set; } //Unique hash of the block
     public string Data { get; set; } //Data of the transaction
     public DateTime Timestamp { get; set; }//Time of the transaction
 
-    public byte[] Prev_Block_Hash { get; set; } //Hash of the previous block
+    public string Prev_Block_Hash { get; set; } //Hash of the previous block
 
 }

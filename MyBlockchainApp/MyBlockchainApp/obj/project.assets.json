@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Polina Tselischeva\\Desktop\\Mendelu\\Blockchain\\MyBlockchainApp\\MyBlockchainApp\\MyBlockchainApp.csproj",
+      "projectUniqueName": "C:\\Users\\Polina Tselischeva\\Desktop\\BlockchainAndCryptocurrencies\\MyBlockchainApp\\MyBlockchainApp\\MyBlockchainApp.csproj",
       "projectName": "MyBlockchainApp",
-      "projectPath": "C:\\Users\\Polina Tselischeva\\Desktop\\Mendelu\\Blockchain\\MyBlockchainApp\\MyBlockchainApp\\MyBlockchainApp.csproj",
+      "projectPath": "C:\\Users\\Polina Tselischeva\\Desktop\\BlockchainAndCryptocurrencies\\MyBlockchainApp\\MyBlockchainApp\\MyBlockchainApp.csproj",
       "packagesPath": "C:\\Users\\Polina Tselischeva\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Polina Tselischeva\\Desktop\\Mendelu\\Blockchain\\MyBlockchainApp\\MyBlockchainApp\\obj\\",
+      "outputPath": "C:\\Users\\Polina Tselischeva\\Desktop\\BlockchainAndCryptocurrencies\\MyBlockchainApp\\MyBlockchainApp\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Polina Tselischeva\\AppData\\Roaming\\NuGet\\NuGet.Config",
